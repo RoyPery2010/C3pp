@@ -12,13 +12,12 @@
 class  C3ppLexer : public antlr4::Lexer {
 public:
   enum {
-    T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, LINE_COMMENT = 5, BLOCK_COMMENT = 6, 
-    AND = 7, OR = 8, NOT = 9, CLASS = 10, RETURN = 11, INT = 12, IF = 13, 
-    ELSE = 14, WHILE = 15, SEMI = 16, COMMA = 17, ASSIGN = 18, EQ = 19, 
-    NEQ = 20, LT = 21, LE = 22, GT = 23, GE = 24, LPAREN = 25, RPAREN = 26, 
-    LBRACE = 27, RBRACE = 28, PLUS = 29, MINUS = 30, MULT = 31, DIV = 32, 
-    COLONCOLON = 33, STD = 34, IDENTIFIER = 35, INT_LITERAL = 36, BOOLEAN_LITERAL = 37, 
-    WS = 38, PUBLIC = 39, PRIVATE = 40
+    T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, SEMI = 7, 
+    ASSIGN = 8, COMMA = 9, LPAREN = 10, RPAREN = 11, LBRACE = 12, RBRACE = 13, 
+    NOT = 14, AND = 15, OR = 16, IF = 17, ELSE = 18, WHILE = 19, RETURN = 20, 
+    PUBLIC = 21, PRIVATE = 22, PROTECTED = 23, CLASS = 24, INT = 25, BOOL = 26, 
+    VOID = 27, STRING = 28, STRING_LITERAL = 29, BOOLEAN_LITERAL = 30, INT_LITERAL = 31, 
+    IDENTIFIER = 32, WHITESPACE = 33, COLON = 34, ESC = 35
   };
 
   explicit C3ppLexer(antlr4::CharStream *input);

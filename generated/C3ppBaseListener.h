@@ -19,41 +19,29 @@ public:
   virtual void enterProgram(C3ppParser::ProgramContext * /*ctx*/) override { }
   virtual void exitProgram(C3ppParser::ProgramContext * /*ctx*/) override { }
 
-  virtual void enterClassDeclaration(C3ppParser::ClassDeclarationContext * /*ctx*/) override { }
-  virtual void exitClassDeclaration(C3ppParser::ClassDeclarationContext * /*ctx*/) override { }
+  virtual void enterClass_declaration(C3ppParser::Class_declarationContext * /*ctx*/) override { }
+  virtual void exitClass_declaration(C3ppParser::Class_declarationContext * /*ctx*/) override { }
 
-  virtual void enterClassBody(C3ppParser::ClassBodyContext * /*ctx*/) override { }
-  virtual void exitClassBody(C3ppParser::ClassBodyContext * /*ctx*/) override { }
+  virtual void enterClass_member(C3ppParser::Class_memberContext * /*ctx*/) override { }
+  virtual void exitClass_member(C3ppParser::Class_memberContext * /*ctx*/) override { }
 
-  virtual void enterAccessModifier(C3ppParser::AccessModifierContext * /*ctx*/) override { }
-  virtual void exitAccessModifier(C3ppParser::AccessModifierContext * /*ctx*/) override { }
+  virtual void enterMethod_declaration(C3ppParser::Method_declarationContext * /*ctx*/) override { }
+  virtual void exitMethod_declaration(C3ppParser::Method_declarationContext * /*ctx*/) override { }
 
-  virtual void enterClassMember(C3ppParser::ClassMemberContext * /*ctx*/) override { }
-  virtual void exitClassMember(C3ppParser::ClassMemberContext * /*ctx*/) override { }
+  virtual void enterField_declaration(C3ppParser::Field_declarationContext * /*ctx*/) override { }
+  virtual void exitField_declaration(C3ppParser::Field_declarationContext * /*ctx*/) override { }
 
-  virtual void enterClassMemberDeclaration(C3ppParser::ClassMemberDeclarationContext * /*ctx*/) override { }
-  virtual void exitClassMemberDeclaration(C3ppParser::ClassMemberDeclarationContext * /*ctx*/) override { }
-
-  virtual void enterFieldDeclaration(C3ppParser::FieldDeclarationContext * /*ctx*/) override { }
-  virtual void exitFieldDeclaration(C3ppParser::FieldDeclarationContext * /*ctx*/) override { }
-
-  virtual void enterMethodDeclaration(C3ppParser::MethodDeclarationContext * /*ctx*/) override { }
-  virtual void exitMethodDeclaration(C3ppParser::MethodDeclarationContext * /*ctx*/) override { }
-
-  virtual void enterFunctionDeclaration(C3ppParser::FunctionDeclarationContext * /*ctx*/) override { }
-  virtual void exitFunctionDeclaration(C3ppParser::FunctionDeclarationContext * /*ctx*/) override { }
-
-  virtual void enterArguments(C3ppParser::ArgumentsContext * /*ctx*/) override { }
-  virtual void exitArguments(C3ppParser::ArgumentsContext * /*ctx*/) override { }
-
-  virtual void enterFunctionCall(C3ppParser::FunctionCallContext * /*ctx*/) override { }
-  virtual void exitFunctionCall(C3ppParser::FunctionCallContext * /*ctx*/) override { }
-
-  virtual void enterParameterList(C3ppParser::ParameterListContext * /*ctx*/) override { }
-  virtual void exitParameterList(C3ppParser::ParameterListContext * /*ctx*/) override { }
+  virtual void enterParameter_list(C3ppParser::Parameter_listContext * /*ctx*/) override { }
+  virtual void exitParameter_list(C3ppParser::Parameter_listContext * /*ctx*/) override { }
 
   virtual void enterParameter(C3ppParser::ParameterContext * /*ctx*/) override { }
   virtual void exitParameter(C3ppParser::ParameterContext * /*ctx*/) override { }
+
+  virtual void enterType(C3ppParser::TypeContext * /*ctx*/) override { }
+  virtual void exitType(C3ppParser::TypeContext * /*ctx*/) override { }
+
+  virtual void enterAccess_modifier(C3ppParser::Access_modifierContext * /*ctx*/) override { }
+  virtual void exitAccess_modifier(C3ppParser::Access_modifierContext * /*ctx*/) override { }
 
   virtual void enterBlock(C3ppParser::BlockContext * /*ctx*/) override { }
   virtual void exitBlock(C3ppParser::BlockContext * /*ctx*/) override { }
@@ -61,53 +49,26 @@ public:
   virtual void enterStatement(C3ppParser::StatementContext * /*ctx*/) override { }
   virtual void exitStatement(C3ppParser::StatementContext * /*ctx*/) override { }
 
-  virtual void enterVariableDeclaration(C3ppParser::VariableDeclarationContext * /*ctx*/) override { }
-  virtual void exitVariableDeclaration(C3ppParser::VariableDeclarationContext * /*ctx*/) override { }
+  virtual void enterAssignment_statement(C3ppParser::Assignment_statementContext * /*ctx*/) override { }
+  virtual void exitAssignment_statement(C3ppParser::Assignment_statementContext * /*ctx*/) override { }
 
-  virtual void enterReturnStatement(C3ppParser::ReturnStatementContext * /*ctx*/) override { }
-  virtual void exitReturnStatement(C3ppParser::ReturnStatementContext * /*ctx*/) override { }
+  virtual void enterIf_statement(C3ppParser::If_statementContext * /*ctx*/) override { }
+  virtual void exitIf_statement(C3ppParser::If_statementContext * /*ctx*/) override { }
 
-  virtual void enterExpressionStatement(C3ppParser::ExpressionStatementContext * /*ctx*/) override { }
-  virtual void exitExpressionStatement(C3ppParser::ExpressionStatementContext * /*ctx*/) override { }
+  virtual void enterWhile_statement(C3ppParser::While_statementContext * /*ctx*/) override { }
+  virtual void exitWhile_statement(C3ppParser::While_statementContext * /*ctx*/) override { }
 
-  virtual void enterIfStatement(C3ppParser::IfStatementContext * /*ctx*/) override { }
-  virtual void exitIfStatement(C3ppParser::IfStatementContext * /*ctx*/) override { }
+  virtual void enterReturn_statement(C3ppParser::Return_statementContext * /*ctx*/) override { }
+  virtual void exitReturn_statement(C3ppParser::Return_statementContext * /*ctx*/) override { }
 
-  virtual void enterWhileStatement(C3ppParser::WhileStatementContext * /*ctx*/) override { }
-  virtual void exitWhileStatement(C3ppParser::WhileStatementContext * /*ctx*/) override { }
-
-  virtual void enterAssignment(C3ppParser::AssignmentContext * /*ctx*/) override { }
-  virtual void exitAssignment(C3ppParser::AssignmentContext * /*ctx*/) override { }
+  virtual void enterExpression_statement(C3ppParser::Expression_statementContext * /*ctx*/) override { }
+  virtual void exitExpression_statement(C3ppParser::Expression_statementContext * /*ctx*/) override { }
 
   virtual void enterExpression(C3ppParser::ExpressionContext * /*ctx*/) override { }
   virtual void exitExpression(C3ppParser::ExpressionContext * /*ctx*/) override { }
 
-  virtual void enterIntExpr(C3ppParser::IntExprContext * /*ctx*/) override { }
-  virtual void exitIntExpr(C3ppParser::IntExprContext * /*ctx*/) override { }
-
-  virtual void enterBoolExpr(C3ppParser::BoolExprContext * /*ctx*/) override { }
-  virtual void exitBoolExpr(C3ppParser::BoolExprContext * /*ctx*/) override { }
-
-  virtual void enterIdExpr(C3ppParser::IdExprContext * /*ctx*/) override { }
-  virtual void exitIdExpr(C3ppParser::IdExprContext * /*ctx*/) override { }
-
-  virtual void enterArrayAccess(C3ppParser::ArrayAccessContext * /*ctx*/) override { }
-  virtual void exitArrayAccess(C3ppParser::ArrayAccessContext * /*ctx*/) override { }
-
-  virtual void enterParensExpr(C3ppParser::ParensExprContext * /*ctx*/) override { }
-  virtual void exitParensExpr(C3ppParser::ParensExprContext * /*ctx*/) override { }
-
-  virtual void enterPrimary(C3ppParser::PrimaryContext * /*ctx*/) override { }
-  virtual void exitPrimary(C3ppParser::PrimaryContext * /*ctx*/) override { }
-
-  virtual void enterArrayInitExpr(C3ppParser::ArrayInitExprContext * /*ctx*/) override { }
-  virtual void exitArrayInitExpr(C3ppParser::ArrayInitExprContext * /*ctx*/) override { }
-
-  virtual void enterType(C3ppParser::TypeContext * /*ctx*/) override { }
-  virtual void exitType(C3ppParser::TypeContext * /*ctx*/) override { }
-
-  virtual void enterQualifiedIdentifier(C3ppParser::QualifiedIdentifierContext * /*ctx*/) override { }
-  virtual void exitQualifiedIdentifier(C3ppParser::QualifiedIdentifierContext * /*ctx*/) override { }
+  virtual void enterBinary_operator(C3ppParser::Binary_operatorContext * /*ctx*/) override { }
+  virtual void exitBinary_operator(C3ppParser::Binary_operatorContext * /*ctx*/) override { }
 
 
   virtual void enterEveryRule(antlr4::ParserRuleContext * /*ctx*/) override { }

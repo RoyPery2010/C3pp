@@ -19,51 +19,35 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitClassDeclaration(C3ppParser::ClassDeclarationContext *ctx) override {
+  virtual std::any visitClass_declaration(C3ppParser::Class_declarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitClassBody(C3ppParser::ClassBodyContext *ctx) override {
+  virtual std::any visitClass_member(C3ppParser::Class_memberContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitAccessModifier(C3ppParser::AccessModifierContext *ctx) override {
+  virtual std::any visitMethod_declaration(C3ppParser::Method_declarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitClassMember(C3ppParser::ClassMemberContext *ctx) override {
+  virtual std::any visitField_declaration(C3ppParser::Field_declarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitClassMemberDeclaration(C3ppParser::ClassMemberDeclarationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitFieldDeclaration(C3ppParser::FieldDeclarationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitMethodDeclaration(C3ppParser::MethodDeclarationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitFunctionDeclaration(C3ppParser::FunctionDeclarationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitArguments(C3ppParser::ArgumentsContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitFunctionCall(C3ppParser::FunctionCallContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitParameterList(C3ppParser::ParameterListContext *ctx) override {
+  virtual std::any visitParameter_list(C3ppParser::Parameter_listContext *ctx) override {
     return visitChildren(ctx);
   }
 
   virtual std::any visitParameter(C3ppParser::ParameterContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitType(C3ppParser::TypeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::any visitAccess_modifier(C3ppParser::Access_modifierContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -75,27 +59,23 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitVariableDeclaration(C3ppParser::VariableDeclarationContext *ctx) override {
+  virtual std::any visitAssignment_statement(C3ppParser::Assignment_statementContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitReturnStatement(C3ppParser::ReturnStatementContext *ctx) override {
+  virtual std::any visitIf_statement(C3ppParser::If_statementContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitExpressionStatement(C3ppParser::ExpressionStatementContext *ctx) override {
+  virtual std::any visitWhile_statement(C3ppParser::While_statementContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitIfStatement(C3ppParser::IfStatementContext *ctx) override {
+  virtual std::any visitReturn_statement(C3ppParser::Return_statementContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual std::any visitWhileStatement(C3ppParser::WhileStatementContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitAssignment(C3ppParser::AssignmentContext *ctx) override {
+  virtual std::any visitExpression_statement(C3ppParser::Expression_statementContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -103,39 +83,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual std::any visitIntExpr(C3ppParser::IntExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitBoolExpr(C3ppParser::BoolExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitIdExpr(C3ppParser::IdExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitArrayAccess(C3ppParser::ArrayAccessContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitParensExpr(C3ppParser::ParensExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitPrimary(C3ppParser::PrimaryContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitArrayInitExpr(C3ppParser::ArrayInitExprContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitType(C3ppParser::TypeContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual std::any visitQualifiedIdentifier(C3ppParser::QualifiedIdentifierContext *ctx) override {
+  virtual std::any visitBinary_operator(C3ppParser::Binary_operatorContext *ctx) override {
     return visitChildren(ctx);
   }
 

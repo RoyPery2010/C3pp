@@ -1,223 +1,78 @@
 grammar C3pp;
 
-program
-    : (classDeclaration | functionDeclaration)* EOF
+// Lexer Rules
+SEMI: ';' ;
+ASSIGN: '=' ;
+COMMA: ',' ;
+LPAREN: '(' ;
+RPAREN: ')' ;
+LBRACE: '{' ;
+RBRACE: '}' ;
+NOT: 'not' ;
+AND: 'and' ;
+OR: 'or' ;
+IF: 'if' ;
+ELSE: 'else' ;
+WHILE: 'while' ;
+RETURN: 'return' ;
+PUBLIC: 'public' ;
+PRIVATE: 'private' ;
+PROTECTED: 'protected' ;
+CLASS: 'class' ;
+INT: 'int' ;
+BOOL: 'bool' ;
+VOID: 'void' ;
+STRING: 'string' ;
+STRING_LITERAL: '"' (ESC | ~["\\])* '"' ;
+BOOLEAN_LITERAL: 'true' | 'false' ;
+INT_LITERAL: [0-9]+ ;
+IDENTIFIER: [a-zA-Z_][a-zA-Z_0-9]* ;
+WHITESPACE: [ \t\r\n]+ -> skip ;
+COLON: ':' ;
+
+// Parser Rules
+program: class_declaration* ;
+
+class_declaration: CLASS IDENTIFIER LBRACE class_member* RBRACE ;
+
+class_member: method_declaration | field_declaration | access_modifier;
+
+method_declaration: type IDENTIFIER LPAREN parameter_list? RPAREN block ;
+
+field_declaration: type IDENTIFIER SEMI ;
+
+parameter_list: parameter (COMMA parameter)* ;
+
+parameter: type IDENTIFIER ;
+
+type: INT | BOOL | VOID | STRING ;
+
+access_modifier
+    : PUBLIC COLON
+    | PRIVATE COLON
     ;
 
+block: LBRACE statement* RBRACE ;
 
-// -----------------------
-// Class Declarations
-// -----------------------
-classDeclaration
-    : CLASS IDENTIFIER LBRACE classBody RBRACE SEMI
-    ;
+statement: assignment_statement | if_statement | while_statement | return_statement | expression_statement ;
 
-classBody
-    : (accessModifier | classMember)*
-    ;
+assignment_statement: IDENTIFIER ASSIGN expression SEMI ;
 
-accessModifier
-    : PUBLIC 
-    | PRIVATE
-    ;
+if_statement: IF LPAREN expression RPAREN block (ELSE block)? ;
 
+while_statement: WHILE LPAREN expression RPAREN block ;
 
-classMember
-    : fieldDeclaration
-    | methodDeclaration
-    ;
+return_statement: RETURN expression? SEMI ;
 
+expression_statement: expression SEMI ;
 
-classMemberDeclaration
-    : accessModifier? (methodDeclaration | fieldDeclaration)*
-    ;
+expression: IDENTIFIER
+          | INT_LITERAL
+          | BOOLEAN_LITERAL
+          | STRING_LITERAL
+          | '(' expression ')'
+          | expression binary_operator expression ;
 
+binary_operator: AND | OR | '==' | '!=' | '<' | '>' | '<=' | '>=' ;
 
-fieldDeclaration
-    : type IDENTIFIER ';'
-    ;
-
-methodDeclaration
-    : type IDENTIFIER '(' parameter? ')' block
-    ;
-
-
-// -----------------------
-// Global Function
-// -----------------------
-functionDeclaration
-    : type IDENTIFIER LPAREN parameterList? RPAREN block
-    ;
-arguments
-    : expression (',' expression)*
-    ;
-
-functionCall
-    : qualifiedIdentifier '(' arguments? ')'
-    ;
-
-
-
-
-// -----------------------
-// Parameters
-// -----------------------
-parameterList
-    : parameter (COMMA parameter)*
-    ;
-
-parameter
-    : type IDENTIFIER
-    ;
-
-// -----------------------
-// Statements & Block
-// -----------------------
-block
-    : LBRACE statement* RBRACE
-    ;
-
-statement
-    : variableDeclaration
-    | returnStatement
-    | expressionStatement
-    | ifStatement
-    | whileStatement
-    | assignment
-    ;
-
-variableDeclaration
-    : type IDENTIFIER (ASSIGN expression)? SEMI
-    ;
-
-returnStatement
-    : RETURN expression? SEMI
-    ;
-
-expressionStatement
-    : expression SEMI
-    ;
-
-ifStatement
-    : IF LPAREN expression RPAREN block (ELSE block)?
-    ;
-
-whileStatement
-    : WHILE LPAREN expression RPAREN block
-    ;
-assignment
-    : IDENTIFIER ASSIGN expression SEMI
-    ;
-
-
-// -----------------------
-// Expressions
-// -----------------------
-expression
-    : expression AND factor               
-    | expression OR factor             
-    | NOT expression 
-    | expression PLUS expression
-    | expression MINUS expression
-    | expression MULT expression
-    | expression DIV expression
-    | expression EQ expression         
-    | expression NEQ expression        
-    | expression LT expression         
-    | expression LE expression         
-    | expression GT expression         
-    | expression GE expression         
-    | primary                          
-    ;
-factor
-    : INT_LITERAL                         # IntExpr
-    | BOOLEAN_LITERAL                     # BoolExpr
-    | IDENTIFIER                          # IdExpr
-    | IDENTIFIER '[' expression ']'       # ArrayAccess
-    | '(' expression ')'                  # ParensExpr
-    ;
-
-primary
-    : IDENTIFIER
-    | INT_LITERAL
-    | functionCall
-    ;
-arrayInitExpression
-    : '{' expression (',' expression)* '}' # ArrayInitExpr
-    ;
-
-LINE_COMMENT
-    : '//' ~[\r\n]* -> skip
-    ;
-
-BLOCK_COMMENT
-    : '/*' .*? '*/' -> skip
-    ;
-
-// -----------------------
-// Types
-// -----------------------
-type
-    : 'int' 
-    | 'bool' 
-    | 'void'
-    ;
-qualifiedIdentifier
-    : IDENTIFIER ('::' IDENTIFIER)*
-    ;
-
-
-
-// -----------------------
-// Lexer Rules (Keywords)
-// -----------------------
-AND : '&&';
-OR  : '||';
-NOT : '!';
-CLASS       : 'class';
-RETURN      : 'return';
-INT         : 'int';
-IF          : 'if';
-ELSE        : 'else';
-WHILE       : 'while';
-
-// -----------------------
-// Symbols
-// -----------------------
-SEMI        : ';';
-COMMA       : ',';
-ASSIGN      : '=';
-EQ          : '==';
-NEQ         : '!=';
-LT          : '<';
-LE          : '<=';
-GT          : '>';
-GE          : '>=';
-LPAREN      : '(';
-RPAREN      : ')';
-LBRACE      : '{';
-RBRACE      : '}';
-PLUS : '+';
-MINUS : '-';
-MULT : '*';
-DIV : '/';
-COLONCOLON : '::' ;
-STD        : 'std' ;
-
-
-
-// -----------------------
-// Identifiers & Literals
-// -----------------------
-IDENTIFIER  : [a-zA-Z_] [a-zA-Z0-9_]*;
-INT_LITERAL : [0-9]+;
-BOOLEAN_LITERAL : 'true' | 'false';   // Explicitly defining the BOOLEAN_LITERAL token
-
-
-// -----------------------
-// Skip whitespace and comments
-// -----------------------
-WS           : [ \t\r\n]+ -> skip;
-PUBLIC      : 'public' ':' ;
-PRIVATE     : 'private' ':' ;
-
+ESC: '\\' [btnfr"'\\] ;

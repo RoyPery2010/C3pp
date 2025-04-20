@@ -17,41 +17,29 @@ public:
   virtual void enterProgram(C3ppParser::ProgramContext *ctx) = 0;
   virtual void exitProgram(C3ppParser::ProgramContext *ctx) = 0;
 
-  virtual void enterClassDeclaration(C3ppParser::ClassDeclarationContext *ctx) = 0;
-  virtual void exitClassDeclaration(C3ppParser::ClassDeclarationContext *ctx) = 0;
+  virtual void enterClass_declaration(C3ppParser::Class_declarationContext *ctx) = 0;
+  virtual void exitClass_declaration(C3ppParser::Class_declarationContext *ctx) = 0;
 
-  virtual void enterClassBody(C3ppParser::ClassBodyContext *ctx) = 0;
-  virtual void exitClassBody(C3ppParser::ClassBodyContext *ctx) = 0;
+  virtual void enterClass_member(C3ppParser::Class_memberContext *ctx) = 0;
+  virtual void exitClass_member(C3ppParser::Class_memberContext *ctx) = 0;
 
-  virtual void enterAccessModifier(C3ppParser::AccessModifierContext *ctx) = 0;
-  virtual void exitAccessModifier(C3ppParser::AccessModifierContext *ctx) = 0;
+  virtual void enterMethod_declaration(C3ppParser::Method_declarationContext *ctx) = 0;
+  virtual void exitMethod_declaration(C3ppParser::Method_declarationContext *ctx) = 0;
 
-  virtual void enterClassMember(C3ppParser::ClassMemberContext *ctx) = 0;
-  virtual void exitClassMember(C3ppParser::ClassMemberContext *ctx) = 0;
+  virtual void enterField_declaration(C3ppParser::Field_declarationContext *ctx) = 0;
+  virtual void exitField_declaration(C3ppParser::Field_declarationContext *ctx) = 0;
 
-  virtual void enterClassMemberDeclaration(C3ppParser::ClassMemberDeclarationContext *ctx) = 0;
-  virtual void exitClassMemberDeclaration(C3ppParser::ClassMemberDeclarationContext *ctx) = 0;
-
-  virtual void enterFieldDeclaration(C3ppParser::FieldDeclarationContext *ctx) = 0;
-  virtual void exitFieldDeclaration(C3ppParser::FieldDeclarationContext *ctx) = 0;
-
-  virtual void enterMethodDeclaration(C3ppParser::MethodDeclarationContext *ctx) = 0;
-  virtual void exitMethodDeclaration(C3ppParser::MethodDeclarationContext *ctx) = 0;
-
-  virtual void enterFunctionDeclaration(C3ppParser::FunctionDeclarationContext *ctx) = 0;
-  virtual void exitFunctionDeclaration(C3ppParser::FunctionDeclarationContext *ctx) = 0;
-
-  virtual void enterArguments(C3ppParser::ArgumentsContext *ctx) = 0;
-  virtual void exitArguments(C3ppParser::ArgumentsContext *ctx) = 0;
-
-  virtual void enterFunctionCall(C3ppParser::FunctionCallContext *ctx) = 0;
-  virtual void exitFunctionCall(C3ppParser::FunctionCallContext *ctx) = 0;
-
-  virtual void enterParameterList(C3ppParser::ParameterListContext *ctx) = 0;
-  virtual void exitParameterList(C3ppParser::ParameterListContext *ctx) = 0;
+  virtual void enterParameter_list(C3ppParser::Parameter_listContext *ctx) = 0;
+  virtual void exitParameter_list(C3ppParser::Parameter_listContext *ctx) = 0;
 
   virtual void enterParameter(C3ppParser::ParameterContext *ctx) = 0;
   virtual void exitParameter(C3ppParser::ParameterContext *ctx) = 0;
+
+  virtual void enterType(C3ppParser::TypeContext *ctx) = 0;
+  virtual void exitType(C3ppParser::TypeContext *ctx) = 0;
+
+  virtual void enterAccess_modifier(C3ppParser::Access_modifierContext *ctx) = 0;
+  virtual void exitAccess_modifier(C3ppParser::Access_modifierContext *ctx) = 0;
 
   virtual void enterBlock(C3ppParser::BlockContext *ctx) = 0;
   virtual void exitBlock(C3ppParser::BlockContext *ctx) = 0;
@@ -59,53 +47,26 @@ public:
   virtual void enterStatement(C3ppParser::StatementContext *ctx) = 0;
   virtual void exitStatement(C3ppParser::StatementContext *ctx) = 0;
 
-  virtual void enterVariableDeclaration(C3ppParser::VariableDeclarationContext *ctx) = 0;
-  virtual void exitVariableDeclaration(C3ppParser::VariableDeclarationContext *ctx) = 0;
+  virtual void enterAssignment_statement(C3ppParser::Assignment_statementContext *ctx) = 0;
+  virtual void exitAssignment_statement(C3ppParser::Assignment_statementContext *ctx) = 0;
 
-  virtual void enterReturnStatement(C3ppParser::ReturnStatementContext *ctx) = 0;
-  virtual void exitReturnStatement(C3ppParser::ReturnStatementContext *ctx) = 0;
+  virtual void enterIf_statement(C3ppParser::If_statementContext *ctx) = 0;
+  virtual void exitIf_statement(C3ppParser::If_statementContext *ctx) = 0;
 
-  virtual void enterExpressionStatement(C3ppParser::ExpressionStatementContext *ctx) = 0;
-  virtual void exitExpressionStatement(C3ppParser::ExpressionStatementContext *ctx) = 0;
+  virtual void enterWhile_statement(C3ppParser::While_statementContext *ctx) = 0;
+  virtual void exitWhile_statement(C3ppParser::While_statementContext *ctx) = 0;
 
-  virtual void enterIfStatement(C3ppParser::IfStatementContext *ctx) = 0;
-  virtual void exitIfStatement(C3ppParser::IfStatementContext *ctx) = 0;
+  virtual void enterReturn_statement(C3ppParser::Return_statementContext *ctx) = 0;
+  virtual void exitReturn_statement(C3ppParser::Return_statementContext *ctx) = 0;
 
-  virtual void enterWhileStatement(C3ppParser::WhileStatementContext *ctx) = 0;
-  virtual void exitWhileStatement(C3ppParser::WhileStatementContext *ctx) = 0;
-
-  virtual void enterAssignment(C3ppParser::AssignmentContext *ctx) = 0;
-  virtual void exitAssignment(C3ppParser::AssignmentContext *ctx) = 0;
+  virtual void enterExpression_statement(C3ppParser::Expression_statementContext *ctx) = 0;
+  virtual void exitExpression_statement(C3ppParser::Expression_statementContext *ctx) = 0;
 
   virtual void enterExpression(C3ppParser::ExpressionContext *ctx) = 0;
   virtual void exitExpression(C3ppParser::ExpressionContext *ctx) = 0;
 
-  virtual void enterIntExpr(C3ppParser::IntExprContext *ctx) = 0;
-  virtual void exitIntExpr(C3ppParser::IntExprContext *ctx) = 0;
-
-  virtual void enterBoolExpr(C3ppParser::BoolExprContext *ctx) = 0;
-  virtual void exitBoolExpr(C3ppParser::BoolExprContext *ctx) = 0;
-
-  virtual void enterIdExpr(C3ppParser::IdExprContext *ctx) = 0;
-  virtual void exitIdExpr(C3ppParser::IdExprContext *ctx) = 0;
-
-  virtual void enterArrayAccess(C3ppParser::ArrayAccessContext *ctx) = 0;
-  virtual void exitArrayAccess(C3ppParser::ArrayAccessContext *ctx) = 0;
-
-  virtual void enterParensExpr(C3ppParser::ParensExprContext *ctx) = 0;
-  virtual void exitParensExpr(C3ppParser::ParensExprContext *ctx) = 0;
-
-  virtual void enterPrimary(C3ppParser::PrimaryContext *ctx) = 0;
-  virtual void exitPrimary(C3ppParser::PrimaryContext *ctx) = 0;
-
-  virtual void enterArrayInitExpr(C3ppParser::ArrayInitExprContext *ctx) = 0;
-  virtual void exitArrayInitExpr(C3ppParser::ArrayInitExprContext *ctx) = 0;
-
-  virtual void enterType(C3ppParser::TypeContext *ctx) = 0;
-  virtual void exitType(C3ppParser::TypeContext *ctx) = 0;
-
-  virtual void enterQualifiedIdentifier(C3ppParser::QualifiedIdentifierContext *ctx) = 0;
-  virtual void exitQualifiedIdentifier(C3ppParser::QualifiedIdentifierContext *ctx) = 0;
+  virtual void enterBinary_operator(C3ppParser::Binary_operatorContext *ctx) = 0;
+  virtual void exitBinary_operator(C3ppParser::Binary_operatorContext *ctx) = 0;
 
 
 };
