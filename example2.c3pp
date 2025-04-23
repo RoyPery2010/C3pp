@@ -1,0 +1,10 @@
+class MyClass {
+public:
+    int$ ptr;
+    void setValue(int& ref) {
+        *ptr = ref;
+    }
+
+private:
+    int secret;
+};

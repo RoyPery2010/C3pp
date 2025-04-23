@@ -8,9 +8,9 @@ LPAREN: '(' ;
 RPAREN: ')' ;
 LBRACE: '{' ;
 RBRACE: '}' ;
-NOT: 'not' ;
-AND: 'and' ;
-OR: 'or' ;
+NOT: '!' ;
+AND: '&&' ;
+OR: '||' ;
 IF: 'if' ;
 ELSE: 'else' ;
 WHILE: 'while' ;
@@ -23,40 +23,240 @@ INT: 'int' ;
 BOOL: 'bool' ;
 VOID: 'void' ;
 STRING: 'string' ;
-STRING_LITERAL: '"' (ESC | ~["\\])* '"' ;
+STRING_LITERAL
+    : '"' (~["\\] | '\\' .)* '"'
+    ;
+
 BOOLEAN_LITERAL: 'true' | 'false' ;
-INT_LITERAL: [0-9]+ ;
+INTEGER_LITERAL: [0-9]+ ;
 IDENTIFIER: [a-zA-Z_][a-zA-Z_0-9]* ;
 WHITESPACE: [ \t\r\n]+ -> skip ;
 COLON: ':' ;
+INCREMENT: '++';
+DECREMENT: '--';
+PLUS_ASSIGN:    '+=';
+MINUS_ASSIGN:   '-=';
+STAR_ASSIGN:    '*=';
+DIV_ASSIGN:     '/=';
+MOD_ASSIGN:     '%=';
+STAR : '*' ;
+AMP : '&' ;
+FOR : 'for';
+AUTO : 'auto';
+PLUS : '+';
+MINUS : '-';
+DIV : '/' ;
+MOD : '%';
+EQ : '==' ;
+NEQ : '!=';
+LT : '<';
+GT : '>';
+LE : '<=';
+GE : '>=';
+SELECTOR : '?';
+CONTINUE : 'continue';
+BREAK : 'break';
+PTR : '$';
 
 // Parser Rules
-program: class_declaration* ;
+program: classDeclaration* ;
 
-class_declaration: CLASS IDENTIFIER LBRACE class_member* RBRACE ;
+classDeclaration
+    : 'class' IDENTIFIER inheritanceSpec? LBRACE classBody RBRACE 
+    ;
 
-class_member: method_declaration | field_declaration | access_modifier;
+inheritanceSpec
+    : COLON IDENTIFIER // for inheritance like class A : B
+    ;
 
-method_declaration: type IDENTIFIER LPAREN parameter_list? RPAREN block ;
+classBody
+    : classElement*
+    ;
 
-field_declaration: type IDENTIFIER SEMI ;
+classElement
+    : accessSpecifier COLON                #accessSection
+    | variableDeclaration                   #fieldDecl
+    | methodDeclaration                   #methodDecl
+    ;
 
-parameter_list: parameter (COMMA parameter)* ;
+accessSpecifier
+    : PUBLIC
+    | PRIVATE
+    ;
 
-parameter: type IDENTIFIER ;
+variableDeclaration
+    : type ASSIGN IDENTIFIER SEMI
+    ;
 
-type: INT | BOOL | VOID | STRING ;
+methodDeclaration
+    : type IDENTIFIER LPAREN parameterList? RPAREN block
+    ;
+
+
+type
+    : INT
+    | BOOL
+    | VOID
+    | STRING
+    | IDENTIFIER // for user-defined types
+    ;
+
+classSection
+    : accessSpecifier COLON classMember*
+    ;
+classMember
+    : methodDeclaration
+    | fieldDeclaration
+    ;
+
+
+
+parameterList
+    : parameter (',' parameter)*
+    ;
+
+baseType
+    : INT | BOOL | STRING | VOID
+    ;
+
+pointerOrReference
+    : PTR | AMP
+    ;
+
+
 
 access_modifier
     : PUBLIC COLON
     | PRIVATE COLON
     ;
 
-block: LBRACE statement* RBRACE ;
+fieldDeclaration
+    : type IDENTIFIER SEMI
+    ;
 
-statement: assignment_statement | if_statement | while_statement | return_statement | expression_statement ;
+parameter
+    : type IDENTIFIER
+    ;
 
-assignment_statement: IDENTIFIER ASSIGN expression SEMI ;
+
+// -- Statements --
+
+expressionStatement
+  : expression SEMI
+  ;
+
+ifStatement
+    : IF LPAREN expression RPAREN block ('else' block)?
+    ;
+
+whileStatement
+    : WHILE LPAREN expression RPAREN block
+    ;
+
+forStatement
+    : FOR LPAREN (variableDeclaration | assignment | SEMI) expression? SEMI expression? RPAREN block
+    ;
+
+returnStatement
+    : RETURN expression? SEMI
+    ;
+
+breakStatement
+    : BREAK SEMI
+    ;
+
+continueStatement
+    : CONTINUE SEMI
+    ;
+
+block
+    : LBRACE statement* RBRACE
+    ;
+
+statement
+    : expressionStatement
+    | variableDeclaration
+    | ifStatement
+    | whileStatement
+    | returnStatement
+    | functionCall
+    | block
+    ;
+
+
+// -- Expressions --
+
+primary
+    : literal
+    | IDENTIFIER
+    | LPAREN expression RPAREN
+    ;
+
+expression
+    : conditionalExpression
+    ;
+
+conditionalExpression
+    : logicalOrExpression (SELECTOR expression COLON expression)?
+    ;
+
+logicalOrExpression
+    : logicalAndExpression ( OR logicalAndExpression )*
+    ;
+
+logicalAndExpression
+    : equalityExpression ( AND equalityExpression )*
+    ;
+
+equalityExpression
+    : relationalExpression ( (EQ | NEQ) relationalExpression )*
+    ;
+
+relationalExpression
+    : additiveExpression ( (LT | GT | LE | GE) additiveExpression )*
+    ;
+
+additiveExpression
+    : multiplicativeExpression ( (PLUS | MINUS) multiplicativeExpression )*
+    ;
+
+multiplicativeExpression
+    : unaryExpression ( (STAR | DIV | MOD) unaryExpression )*
+    ;
+
+unaryExpression
+    : ( INCREMENT | DECREMENT | NOT | PLUS | MINUS) unaryExpression
+    | postfixExpression
+    ;
+
+postfixExpression
+    : primaryExpression (INCREMENT | DECREMENT)*
+    ;
+
+primaryExpression
+    : IDENTIFIER
+    | literal
+    | LPAREN expression RPAREN
+    ;
+
+binaryOp
+    : PLUS | MINUS | STAR | DIV | MOD | EQ | NEQ | LT | LE | GT | GE | AND | OR
+    ;
+
+assignment
+    : IDENTIFIER ASSIGN expression SEMI
+    ;
+
+literal
+    : INTEGER_LITERAL
+    | BOOLEAN_LITERAL
+    | STRING_LITERAL
+    | INT
+    | STRING
+    | BOOL
+    ;
+
+
 
 if_statement: IF LPAREN expression RPAREN block (ELSE block)? ;
 
@@ -66,13 +266,31 @@ return_statement: RETURN expression? SEMI ;
 
 expression_statement: expression SEMI ;
 
-expression: IDENTIFIER
-          | INT_LITERAL
-          | BOOLEAN_LITERAL
-          | STRING_LITERAL
-          | '(' expression ')'
-          | expression binary_operator expression ;
+forInit
+    : variableDeclaration
+    | assignment
+    ;
 
-binary_operator: AND | OR | '==' | '!=' | '<' | '>' | '<=' | '>=' ;
+forCondition
+    : expression
+    ;
+
+forUpdate
+    : assignment
+    | expression
+    ;
+rangeForStatement
+    : FOR LPAREN AUTO IDENTIFIER COLON expression RPAREN block
+    ;
+
+functionCall
+  : IDENTIFIER '(' argumentList? ')' SEMI
+  ;
+
+argumentList
+  : expression (',' expression)*
+  ;
+
+
 
 ESC: '\\' [btnfr"'\\] ;

@@ -1,186 +1,133 @@
 grammar C3pp;
 
-program
-    : (classDeclaration | functionDeclaration)* EOF
+// Lexer Rules
+SEMI: ';' ;
+ASSIGN: '=' ;
+COMMA: ',' ;
+LPAREN: '(' ;
+RPAREN: ')' ;
+LBRACE: '{' ;
+RBRACE: '}' ;
+NOT: 'not' ;
+AND: 'and' ;
+OR: 'or' ;
+IF: 'if' ;
+ELSE: 'else' ;
+WHILE: 'while' ;
+RETURN: 'return' ;
+PUBLIC: 'public' ;
+PRIVATE: 'private' ;
+PROTECTED: 'protected' ;
+CLASS: 'class' ;
+INT: 'int' ;
+BOOL: 'bool' ;
+VOID: 'void' ;
+STRING: 'string' ;
+STRING_LITERAL: '"' (ESC | ~["\\])* '"' ;
+BOOLEAN_LITERAL: 'true' | 'false' ;
+INT_LITERAL: [0-9]+ ;
+IDENTIFIER: [a-zA-Z_][a-zA-Z_0-9]* ;
+WHITESPACE: [ \t\r\n]+ -> skip ;
+COLON: ':' ;
+INCREMENT: '++';
+DECREMENT: '--';
+PLUS_ASSIGN:    '+=';
+MINUS_ASSIGN:   '-=';
+STAR_ASSIGN:    '*=';
+DIV_ASSIGN:     '/=';
+MOD_ASSIGN:     '%=';
+
+
+// Parser Rules
+program: class_declaration* ;
+
+class_declaration: CLASS IDENTIFIER LBRACE class_member* RBRACE ;
+
+class_member: method_declaration | field_declaration | access_modifier;
+
+method_declaration: type IDENTIFIER LPAREN parameter_list? RPAREN block ;
+
+field_declaration: type IDENTIFIER SEMI ;
+
+parameter_list: parameter (COMMA parameter)* ;
+
+parameter: type IDENTIFIER ;
+
+type: INT | BOOL | VOID | STRING ;
+
+access_modifier
+    : PUBLIC COLON
+    | PRIVATE COLON
     ;
 
-// -----------------------
-// Class Declarations
-// -----------------------
-classDeclaration
-    : CLASS IDENTIFIER LBRACE classBody RBRACE SEMI
+block: LBRACE statement* RBRACE ;
+
+statement: assignment | if_statement | while_statement | return_statement | expression_statement | forStatement ;
+
+assignment
+    : IDENTIFIER '=' expression                   # assign
+    | IDENTIFIER PLUS_ASSIGN expression           # plusAssign
+    | IDENTIFIER MINUS_ASSIGN expression          # minusAssign
+    | IDENTIFIER STAR_ASSIGN expression           # multAssign
+    | IDENTIFIER DIV_ASSIGN expression            # divAssign
+    | IDENTIFIER MOD_ASSIGN expression            # modAssign
     ;
 
-classBody
-    : (methodDeclaration | variableDeclaration)*
+
+if_statement: IF LPAREN expression RPAREN block (ELSE block)? ;
+
+while_statement: WHILE LPAREN expression RPAREN block ;
+
+return_statement: RETURN expression? SEMI ;
+
+expression_statement: expression SEMI ;
+
+expression
+    : IDENTIFIER                                      # varReference
+    | INT_LITERAL                                     # intLiteral
+    | BOOLEAN_LITERAL                                 # boolLiteral
+    | STRING_LITERAL                                  # stringLiteral
+    | LPAREN expression RPAREN                        # parenExpr
+    | expression binary_operator expression           # binaryExpr
+    | INCREMENT expression                            # prefixIncrement
+    | DECREMENT expression                            # prefixDecrement
+    | expression INCREMENT                            # postfixIncrement
+    | expression DECREMENT                            # postfixDecrement
     ;
 
-classMember
-    : fieldDeclaration
-    | methodDeclaration
+
+binary_operator
+    : AND
+    | OR
+    | '=='
+    | '!='
+    | '<'
+    | '>'
+    | '<='
+    | '>='
+    | '+'
+    | '-'
+    | '*'
+    | '/'
+    ;
+forStatement
+    : 'for' LPAREN forInit? SEMI forCondition? SEMI forUpdate? RPAREN block
     ;
 
-fieldDeclaration
-    : type IDENTIFIER SEMI
-    ;
-
-methodDeclaration
-    : type IDENTIFIER LPAREN parameterList? RPAREN block
-    ;
-
-// -----------------------
-// Global Function
-// -----------------------
-functionDeclaration
-    : type IDENTIFIER LPAREN parameterList? RPAREN block
-    ;
-
-// -----------------------
-// Parameters
-// -----------------------
-parameterList
-    : parameter (COMMA parameter)*
-    ;
-
-parameter
-    : type IDENTIFIER
-    ;
-
-// -----------------------
-// Statements & Block
-// -----------------------
-block
-    : LBRACE statement* RBRACE
-    ;
-
-statement
+forInit
     : variableDeclaration
-    | returnStatement
-    | expressionStatement
-    | ifStatement
-    | whileStatement
     | assignment
     ;
 
-variableDeclaration
-    : type IDENTIFIER (ASSIGN expression)? SEMI
+forCondition
+    : expression
     ;
 
-returnStatement
-    : RETURN expression? SEMI
-    ;
-
-expressionStatement
-    : expression SEMI
-    ;
-
-ifStatement
-    : IF LPAREN expression RPAREN block (ELSE block)?
-    ;
-
-whileStatement
-    : WHILE LPAREN expression RPAREN block
-    ;
-assignment
-    : IDENTIFIER ASSIGN expression SEMI
+forUpdate
+    : assignment
+    | expression
     ;
 
 
-// -----------------------
-// Expressions
-// -----------------------
-expression
-    : expression AND factor               
-    | expression OR factor             
-    | NOT expression 
-    | expression PLUS expression
-    | expression MINUS expression
-    | expression MULT expression
-    | expression DIV expression
-    | expression EQ expression         
-    | expression NEQ expression        
-    | expression LT expression         
-    | expression LE expression         
-    | expression GT expression         
-    | expression GE expression         
-    | primary                          
-    ;
-factor
-    : INT_LITERAL                         # IntExpr
-    | BOOLEAN_LITERAL                     # BoolExpr
-    | IDENTIFIER                          # IdExpr
-    | IDENTIFIER '[' expression ']'       # ArrayAccess
-    | '(' expression ')'                  # ParensExpr
-    ;
 
-primary
-    : IDENTIFIER
-    | INT_LITERAL
-    ;
-arrayInitExpression
-    : '{' expression (',' expression)* '}' # ArrayInitExpr
-    ;
-
-LINE_COMMENT
-    : '//' ~[\r\n]* -> skip
-    ;
-
-BLOCK_COMMENT
-    : '/*' .*? '*/' -> skip
-    ;
-
-// -----------------------
-// Types
-// -----------------------
-type
-    : 'int' 
-    | 'bool' 
-    ;
-
-// -----------------------
-// Lexer Rules (Keywords)
-// -----------------------
-AND : '&&';
-OR  : '||';
-NOT : '!';
-CLASS       : 'class';
-RETURN      : 'return';
-INT         : 'int';
-IF          : 'if';
-ELSE        : 'else';
-WHILE       : 'while';
-
-// -----------------------
-// Symbols
-// -----------------------
-SEMI        : ';';
-COMMA       : ',';
-ASSIGN      : '=';
-EQ          : '==';
-NEQ         : '!=';
-LT          : '<';
-LE          : '<=';
-GT          : '>';
-GE          : '>=';
-LPAREN      : '(';
-RPAREN      : ')';
-LBRACE      : '{';
-RBRACE      : '}';
-PLUS : '+';
-MINUS : '-';
-MULT : '*';
-DIV : '/';
-
-
-// -----------------------
-// Identifiers & Literals
-// -----------------------
-IDENTIFIER  : [a-zA-Z_] [a-zA-Z0-9_]*;
-INT_LITERAL : [0-9]+;
-BOOLEAN_LITERAL : 'true' | 'false';   // Explicitly defining the BOOLEAN_LITERAL token
-
-
-// -----------------------
-// Skip whitespace and comments
-// -----------------------
-WS           : [ \t\r\n]+ -> skip;
+ESC: '\\' [btnfr"'\\] ;

@@ -12,12 +12,16 @@
 class  C3ppLexer : public antlr4::Lexer {
 public:
   enum {
-    T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, SEMI = 7, 
-    ASSIGN = 8, COMMA = 9, LPAREN = 10, RPAREN = 11, LBRACE = 12, RBRACE = 13, 
-    NOT = 14, AND = 15, OR = 16, IF = 17, ELSE = 18, WHILE = 19, RETURN = 20, 
-    PUBLIC = 21, PRIVATE = 22, PROTECTED = 23, CLASS = 24, INT = 25, BOOL = 26, 
-    VOID = 27, STRING = 28, STRING_LITERAL = 29, BOOLEAN_LITERAL = 30, INT_LITERAL = 31, 
-    IDENTIFIER = 32, WHITESPACE = 33, COLON = 34, ESC = 35
+    SEMI = 1, ASSIGN = 2, COMMA = 3, LPAREN = 4, RPAREN = 5, LBRACE = 6, 
+    RBRACE = 7, NOT = 8, AND = 9, OR = 10, IF = 11, ELSE = 12, WHILE = 13, 
+    RETURN = 14, PUBLIC = 15, PRIVATE = 16, PROTECTED = 17, CLASS = 18, 
+    INT = 19, BOOL = 20, VOID = 21, STRING = 22, STRING_LITERAL = 23, BOOLEAN_LITERAL = 24, 
+    INTEGER_LITERAL = 25, IDENTIFIER = 26, WHITESPACE = 27, COLON = 28, 
+    INCREMENT = 29, DECREMENT = 30, PLUS_ASSIGN = 31, MINUS_ASSIGN = 32, 
+    STAR_ASSIGN = 33, DIV_ASSIGN = 34, MOD_ASSIGN = 35, STAR = 36, AMP = 37, 
+    FOR = 38, AUTO = 39, PLUS = 40, MINUS = 41, DIV = 42, MOD = 43, EQ = 44, 
+    NEQ = 45, LT = 46, GT = 47, LE = 48, GE = 49, SELECTOR = 50, CONTINUE = 51, 
+    BREAK = 52, PTR = 53, ESC = 54
   };
 
   explicit C3ppLexer(antlr4::CharStream *input);

@@ -1,2 +1,6 @@
-class Point {
+class Animal {
+public:
+    void speak() {
+       print();
+    }
 };
