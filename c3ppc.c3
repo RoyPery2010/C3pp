@@ -1,12 +1,11 @@
 module c3ppc;
-
 import std::io;
 import std::io::file;
 import std::core::dstring;
 
 fn void main(String[] args) {
     if (args.len < 2) {
-        io::printn("Usage: c3++c <input.c3pp>");
+        io::printn("Usage: c3ppc <input_file.c3ipp, .c3pp, or .c3i>");
         return;
     }
 
@@ -30,9 +29,6 @@ fn void main(String[] args) {
     String current_class = "";
     String template_params = "";
 
-    DString field_names = dstring::new(tmem);
-    DString known_classes = dstring::new(tmem);
-
     usz line_start = 0;
     for (usz i = 0; i <= src.len; i++) {
         if (i == src.len || src[i] == '\n') {
@@ -46,6 +42,63 @@ fn void main(String[] args) {
             }
 
             String trimmed = str_trim(line);
+
+            // 0. Handle #include conversion to import
+            if (!in_class && str_starts_with(trimmed, "#include")) {
+                if (find_char(trimmed, '<') != -1 && find_char(trimmed, '>') != -1) {
+                    sz open_b = find_char(trimmed, '<');
+                    sz close_b = find_char(trimmed, '>');
+                    String header_name = str_trim(safe_slice(trimmed, (usz)open_b + 1, (usz)close_b));
+                    
+                    if (header_name == "iostream" || header_name == "stdio.h") {
+                        out.append("import std::io;\n");
+                    } else if (header_name == "vector") {
+                        out.append("import std::collections::list;\n");
+                    } else {
+                        out.appendf("import %s;\n", header_name);
+                    }
+                    continue;
+                }
+            }
+
+            // 0. Handle top-level standalone functions (like main) outside of classes
+            if (!in_class && (str_starts_with(trimmed, "fn void main") || str_starts_with(trimmed, "fn int main") || str_starts_with(trimmed, "void main"))) {
+                if (str_starts_with(trimmed, "void main") || str_starts_with(trimmed, "int main")) {
+                    out.appendf("fn %s\n", line);
+                } else {
+                    out.appendf("%s\n", line);
+                }
+                continue;
+            }
+
+            // 0. Automatically intercept object instantiations outside classes and auto-inject .init()
+            if (!in_class) {
+                String trimmed_line = str_trim(line);
+                // Check if it's a variable declaration like "Greeter g;"
+                if (find_char(trimmed_line, ';') != -1 && find_char(trimmed_line, '=') == -1 && !str_starts_with(trimmed_line, "return") && !str_starts_with(trimmed_line, "import") && !str_starts_with(trimmed_line, "module")) {
+                    sz space_idx = find_char(trimmed_line, ' ');
+                    if (space_idx != -1) {
+                        String potential_type = str_trim(safe_slice(trimmed_line, 0, (usz)space_idx));
+                        
+                        // If it's an uppercase type name (which user-defined classes are in C3), treat it as a class instance
+                        if (potential_type.len > 0 && potential_type[0] >= 'A' && potential_type[0] <= 'Z') {
+                            out.appendf("%s\n", line);
+                            String rest_decl = str_trim(safe_slice(trimmed_line, (usz)space_idx, trimmed_line.len));
+                            sz semi_idx = find_char(rest_decl, ';');
+                            if (semi_idx != -1) {
+                                String var_name = str_trim(safe_slice(rest_decl, 0, (usz)semi_idx));
+                                sz paren_idx = find_char(var_name, '(');
+                                if (paren_idx != -1) {
+                                    var_name = str_trim(safe_slice(var_name, 0, (usz)paren_idx));
+                                }
+                                // Correctly generate: TypeName.init(&variableName);
+                                out.appendf("    %s.init(&%s);\n", potential_type, var_name);
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
 
             // 0. Catch template declarations: template <typename T>
             if (!in_class && str_starts_with(trimmed, "template")) {
@@ -68,7 +121,6 @@ fn void main(String[] args) {
                 in_class = true;
                 fields.clear();
                 methods.clear();
-                field_names.clear();
 
                 String header = "";
                 if (trimmed.len >= 7) {
@@ -86,8 +138,6 @@ fn void main(String[] args) {
                 } else {
                     current_class = header;
                 }
-
-                known_classes.appendf("%s;", current_class);
 
                 if (parent.len > 0) {
                     fields.appendf("    inline %s base;\n", parent);
@@ -137,7 +187,7 @@ fn void main(String[] args) {
                 }
 
                 // 4. Constructor transformation
-                if (!in_method && str_starts_with(trimmed, current_class) && find_char(trimmed, '(') != -1 && str_ends_with(trimmed, "{")) {
+                if (!in_method && str_starts_with(trimmed, current_class) && find_char(trimmed, '(') != -1) {
                     in_method = true;
                     brace_depth = 1;
 
@@ -153,17 +203,12 @@ fn void main(String[] args) {
                     continue;
                 }
 
-                // 5. Method signature
-                if (!in_method && (str_starts_with(trimmed, "fn ") || str_starts_with(trimmed, "virtual ") || str_starts_with(trimmed, "override "))) {
+                // 5. Method signature transformation
+                if (!in_method && (str_starts_with(trimmed, "fn ") || (find_char(trimmed, '(') != -1 && str_ends_with(trimmed, "{")))) {
                     in_method = true;
                     brace_depth = 1;
 
                     String method_def = trimmed;
-                    if (str_starts_with(trimmed, "virtual ")) {
-                        method_def = safe_slice(trimmed, 8, trimmed.len);
-                    } else if (str_starts_with(trimmed, "override ")) {
-                        method_def = safe_slice(trimmed, 9, trimmed.len);
-                    }
                     if (str_starts_with(method_def, "fn ")) {
                         method_def = safe_slice(method_def, 3, method_def.len);
                     }
@@ -193,7 +238,7 @@ fn void main(String[] args) {
                     continue;
                 }
 
-                // 6. Inside method body
+                // 6. Inside method body tracking
                 if (in_method) {
                     if (str_ends_with(trimmed, "{")) {
                         brace_depth++;
@@ -212,56 +257,26 @@ fn void main(String[] args) {
                     continue;
                 }
 
-                // 7. Field declaration (with unique_ptr mapping)
-                String mapped_line = line;
-                if (str_starts_with(str_trim(line), "unique_ptr<")) {
-                    sz closing_bracket = find_char(line, '>');
-                    if (closing_bracket != -1) {
-                        String inner_type = str_trim(safe_slice(line, 11, (usz)closing_bracket));
-                        String rest_var = str_trim(safe_slice(line, (usz)closing_bracket + 1, line.len));
-                        
-                        DString fmt_buf = dstring::new(tmem);
-                        fmt_buf.appendf("    %s* %s", inner_type, rest_var);
-                        mapped_line = fmt_buf.str_view();
-                    }
-                }
-
-                String processed = replace_this_safe(mapped_line);
-                fields.appendf("%s\n", processed);
-
-                sz space_idx = find_char(trimmed, ' ');
-                sz semi_idx = find_char(trimmed, ';');
-                if (space_idx != -1 && semi_idx != -1 && semi_idx > space_idx) {
-                    String fname = str_trim(safe_slice(trimmed, (usz)space_idx + 1, (usz)semi_idx));
-                    if (fname.len > 0) {
-                        field_names.appendf("%s;", fname);
-                    }
+                // 7. Fallback for fields
+                if (trimmed.len > 0) {
+                    String processed = replace_this_safe(line);
+                    fields.appendf("%s\n", processed);
                 }
                 continue;
-            }
-
-            // Global scope stack variable instantiation tracking
-            sz space_pos = find_char(trimmed, ' ');
-            sz semi_pos = find_char(trimmed, ';');
-            if (space_pos != -1 && semi_pos != -1 && semi_pos > space_pos) {
-                String type_name = str_trim(safe_slice(trimmed, 0, (usz)space_pos));
-                String var_name = str_trim(safe_slice(trimmed, (usz)space_pos + 1, (usz)semi_pos));
-
-                if (type_name.len > 0 && var_name.len > 0 && is_class_known(known_classes.str_view(), type_name)) {
-                    out.appendf("%s\n", line);
-                    out.appendf("    %s.init(&%s);\n", type_name, var_name);
-                    out.appendf("    defer %s.finalize(&%s);\n", type_name, var_name);
-                    continue;
-                }
             }
 
             out.appendf("%s\n", line);
         }
     }
 
+    // Automatically resolve output filename depending on extension input
     DString path_buf = dstring::new(tmem);
-    if (str_ends_with(input_file, ".c3pp") && input_file.len >= 5) {
+    if (str_ends_with(input_file, ".c3ipp") && input_file.len >= 6) {
+        path_buf.appendf("%s.c3", safe_slice(input_file, 0, input_file.len - 6));
+    } else if (str_ends_with(input_file, ".c3pp") && input_file.len >= 5) {
         path_buf.appendf("%s.c3", safe_slice(input_file, 0, input_file.len - 5));
+    } else if (str_ends_with(input_file, ".c3i") && input_file.len >= 4) {
+        path_buf.appendf("%s.c3i", safe_slice(input_file, 0, input_file.len - 4));
     } else {
         path_buf.appendf("%s.c3", input_file);
     }
@@ -308,24 +323,14 @@ fn sz find_char(String str, char target) {
     return -1;
 }
 
-fn bool is_class_known(String class_list, String class_name) {
-    if (class_name.len == 0) return false;
-    usz start = 0;
-    for (usz i = 0; i < class_list.len; i++) {
-        if (class_list[i] == ';') {
-            String entry = safe_slice(class_list, start, i);
-            if (entry == class_name) return true;
-            start = i + 1;
-        }
-    }
-    return false;
-}
-
 fn String replace_this_safe(String line) {
     DString sb = dstring::new(tmem);
     usz curr = 0;
     while (curr < line.len) {
-        if (curr + 5 <= line.len && safe_slice(line, curr, curr + 5) == "this.") {
+        if (curr + 6 <= line.len && safe_slice(line, curr, curr + 6) == "this->") {
+            sb.append("self.");
+            curr += 6;
+        } else if (curr + 5 <= line.len && safe_slice(line, curr, curr + 5) == "this.") {
             sb.append("self.");
             curr += 5;
         } else {

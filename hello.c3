@@ -5,10 +5,7 @@ import std::io;
 struct Greeter {
     // public:
     int id;
-
     // Default constructor with no parameters
-
-
 }
 
 fn void Greeter.init(Greeter* self) {
@@ -27,6 +24,5 @@ fn void Greeter.finalize(Greeter* self) {
 fn void main(String[] args) {
     Greeter g;
     Greeter.init(&g);
-    defer Greeter.finalize(&g);
     g.say_hello();
 }

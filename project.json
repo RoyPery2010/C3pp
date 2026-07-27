@@ -1,0 +1,10 @@
+{
+  "langrev": "1",
+  "sources": ["."],
+  "dependencies": [],
+  "targets": {
+    "c3ppc": {
+      "type": "executable"
+    }
+  }
+}
