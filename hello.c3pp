@@ -1,0 +1,26 @@
+module hello;
+
+import std::io;
+
+class Greeter {
+public:
+    int id;
+
+    // Default constructor with no parameters
+    Greeter() {
+        this.id = 42;
+    }
+
+    fn void say_hello() {
+        io::printfn("Hello World from C3++! Greeter ID: %d", this.id);
+    }
+
+    ~Greeter() {
+        io::printn("Greeter destroyed cleanly.");
+    }
+}
+
+fn void main(String[] args) {
+    Greeter g;
+    g.say_hello();
+}

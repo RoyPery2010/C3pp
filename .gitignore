@@ -1,0 +1,95 @@
+# ============================================
+# C3++ — .gitignore
+# ============================================
+
+# ----- Compiled binaries -----
+# The transpiler itself
+c3ppc
+c3ppc.exe
+
+# Sample program binaries produced from .c3pp / .c3 sources
+hello
+hello.exe
+
+# Catch-all for any other compiled executables produced here
+*.exe
+*.out
+*.app
+
+# ----- C3 / C build outputs -----
+# Object files
+*.o
+*.obj
+
+# Dependency files
+*.d
+
+# Static and shared libraries
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Debug files
+*.pdb
+
+# ----- Build directories -----
+build/
+dist/
+out/
+release/
+debug/
+target/
+bin/
+obj/
+
+# ----- C3++ transpiler outputs -----
+# Generated .c3 files from .c3pp source (these are derivable)
+# (none yet — uncomment if your build starts producing intermediates)
+# *.gen.c3
+
+# ----- Editor / IDE -----
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.settings/
+nbproject/
+nb-configuration.xml
+
+# ----- OS files -----
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ----- Logs and temp files ----#
+*.log
+*.tmp
+*.bak
+
+# ----- Environment / secrets ----#
+.env
+.env.local
+.env.*.local
+secrets.*
+
+# ----- Coverage / profiling ----#
+*.gcda
+*.gcno
+*.gcov
+coverage/
+*.profraw
+*.profdata
